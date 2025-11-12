@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-FROST EMA preprocessing (only FROST).
+FROST EMA preprocessing.
 
-- Input: .txt/.pos/.csv with columns like ChN_X, ChN_Z (FROST format).
+- Input: .txt/.pos/.csv with columns like ChN_X, ChN_Z.
 - Output columns (unified):
     time_s, ULx, ULy, LLx, LLy, TTx, TTy, TBx, TBy, TDx, TDy
   where x = horizontal (X), y = vertical (Z).
