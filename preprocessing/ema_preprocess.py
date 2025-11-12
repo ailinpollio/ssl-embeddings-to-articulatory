@@ -67,9 +67,9 @@ FROST_NUM_TO_SENSOR: Dict[int, str] = {
 # Speaker-specific overrides:
 # Map sensor -> channel number. When present, it replaces both axes (X and Z).
 FROST_SPEAKER_OVERRIDES: Dict[str, Dict[str, int]] = {
-    # fin_kh5: TT is on Ch14 instead of Ch7
+    # fin 5: TT is on Ch14 instead of Ch7
     "fin_kh5_f": {"TT": 14},
-    # rus_kh18: TD is on Ch14 instead of Ch8
+    # rus 18: TD is on Ch14 instead of Ch8
     "rus_kh18_m": {"TD": 14},
 }
 
@@ -192,21 +192,20 @@ def frost_keep_and_rename(df: pd.DataFrame, speaker: Optional[str]) -> pd.DataFr
     Keep available FROST channels, rename to anatomical schema,
     and apply per-speaker overrides before checking missing columns.
     """
-    # Build rename map first — includes overrides (so Ch14 replacement is applied)
+    # Build rename map — includes overrides
     rename_map = frost_build_channel_map(speaker)
 
-    # Now check what’s missing only after the override map is defined
     missing_src = [c for c in rename_map if c not in df.columns]
     if missing_src:
         print(f"[WARN] Missing FROST columns for {speaker or 'file'}: {missing_src}")
 
-    # Keep only columns that actually exist
+    # Only columns that actually exist
     keep_src = [c for c in rename_map if c in df.columns]
 
     # Apply renaming
     out = df[keep_src].rename(columns=rename_map).copy()
 
-    # Fill any missing target columns with NaN
+    # Any missing target columns with NaN
     required = ["ULx","ULy","LLx","LLy","TTx","TTy","TBx","TBy","TDx","TDy"]
     for col in required:
         if col not in out.columns:
