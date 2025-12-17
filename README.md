@@ -1,4 +1,4 @@
-# ssl-embeddigns-to-articulatory
+# ssl-embeddings-to-articulatory
 
 Work in progress ⛏️ ⛏️ ⛏️
 
