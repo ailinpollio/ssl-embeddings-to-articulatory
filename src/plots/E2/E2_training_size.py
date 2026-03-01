@@ -33,13 +33,39 @@ ymin = summary['min'].to_numpy()
 ymax = summary['max'].to_numpy()
 std = summary['std'].fillna(0.0).to_numpy()
 
-# colorblind-safe 
-mean_color = "#0072B2"  
-shade_color = "#56B4E9"  
+mean_color = "#0072B2"
+shade_color = "#56B4E9"
 
 plt.figure(figsize=(10, 6))
 
-# filled bands
+# ADD: individual speaker curves (ultra thin, background)
+
+# map training size to x position
+x_map = {t: i for i, t in enumerate(ticks)}
+
+for speaker_id, data in per_speaker.groupby('speaker'):
+    data = data.sort_values('training_size_seconds')
+    
+    x_vals = [x_map[t] for t in data['training_size_seconds']]
+    y_vals = data['pearson_correlation'].to_numpy()
+    
+    # linestyle by language
+    if speaker_id.startswith('fin_'):
+        linestyle = '-'
+    elif speaker_id.startswith('rus_'):
+        linestyle = ':'
+    else:
+        linestyle = '-'
+    
+    plt.plot(
+        x_vals,
+        y_vals,
+        color='gray',
+        linewidth=0.9,
+        alpha=0.35,
+        linestyle=linestyle
+    )
+
 plt.fill_between(
     x_positions, ymin, ymax,
     color=shade_color,
@@ -56,7 +82,6 @@ plt.fill_between(
     label='±1 std'
 )
 
-# mean curve
 plt.plot(
     x_positions, mean,
     marker='o',
@@ -65,7 +90,6 @@ plt.plot(
     label='Mean across speakers'
 )
 
-# vertical line at plateau
 if 300 in ticks:
     idx_300 = ticks.index(300)
     plt.axvline(
